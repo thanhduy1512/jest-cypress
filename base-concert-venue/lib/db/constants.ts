@@ -5,5 +5,8 @@ export const getDbPath = (): string => {
   if (!process.env.DB_PATH) {
     throw new Error("DB_PATH not set");
   }
+  if (process.env.APP_ENV === "test")
+    process.env.DB_PATH = "./__tests__/__mocks__/db";
+
   return process.env.DB_PATH;
 };
