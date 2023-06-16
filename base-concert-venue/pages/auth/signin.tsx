@@ -9,12 +9,16 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import NextAuth from "next-auth/next";
+import credentials from "next-auth/providers/credentials";
+import { signIn, useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { LoadingSpinner } from "@/components/_common/LoadingSpinner";
 import { SignInError } from "@/components/auth/SignInError";
+import { axiosInstance } from "@/lib/axios/axiosInstance";
+import { routes } from "@/lib/axios/routes";
 import { useSessionStatus } from "@/lib/features/users/useSessionStatus";
 
 interface FormField {
@@ -48,18 +52,28 @@ export default function SignIn() {
     { name: "email", display: "Email address", default: "test@test.test" },
     { name: "password", display: "Password", default: "test" },
   ];
+  const { data: session } = useSession();
+  console.log(session);
 
-  const handleSignIn = handleSubmit((data) =>
-    signIn("credentials", {
-      ...data,
-      redirect: false,
-    }).then(
-      // @ts-expect-error (docs for signIn return value conflict with TypeScript)
-      ({ error }) => {
-        if (error) setAuthError(error);
-      }
-    )
-  );
+  const handleSignIn = handleSubmit(async (data) => {
+    // signIn("credentials", {
+    //   ...data,
+    //   redirect: false,
+    // }).then(
+    //   // @ts-expect-error (docs for signIn return value conflict with TypeScript)
+    //   ({ error }) => {
+    //     if (error) setAuthError(error);
+    //   }
+    // );
+    console.log("============================", data);
+    const { data: user } = await axiosInstance({
+      url: `/api/${routes.users}`,
+      method: "POST",
+      data: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log("============================", user);
+  });
 
   return (
     <Flex minH="84vh" align="center" justify="center">

@@ -5,7 +5,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "build": "next build",
-    "build:test": "npm run db:reset && set APP_ENV=test&& next build ",
+    "build:test": "npm run db:reset && set APP_ENV=test&& next build",
     "start": "next start",
     "start:test": "set APP_ENV=test&& next start -p 3001",
     "test": "jest --watch",
